@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:qtec_ecommerce/blocs/product_cubit.dart';
+import 'package:qtec_ecommerce/screens/product_details_page.dart';
 import 'package:qtec_ecommerce/variables/variables.dart';
 import 'package:qtec_ecommerce/widgets/product_tile.dart';
 import '../variables/decorations.dart';
@@ -30,7 +31,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
     await Future.delayed(const Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
     if(mounted) {
-      setState(() {});
+      //setState(() {});
     }
     _refreshController.loadComplete();
   }
@@ -54,6 +55,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
         child: TextField(
           controller: pc.searchController,
           decoration: searchDecoration(wd),
+          focusNode: pc.searchFocusNode,
         ),
       ),
 

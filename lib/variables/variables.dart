@@ -7,7 +7,7 @@ class Variables{
   static const Color purpleDeep = Color(0xff2503B9);
   static const Color purpleLite= Color(0xff6210E1);
   static const Color appBgColor= Color(0xffF7F2FF);
-  static final Color textColor= Colors.grey.shade900;
+  static const Color textColor= Color(0xff323232);
   static const Color hintColor= Color(0xffA7A7A7);
 
   static const Map<int, Color> primaryColorMap = {

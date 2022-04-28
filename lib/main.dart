@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: Variables.themeData,
       home: MultiBlocProvider(
         providers: [
-          BlocProvider<ProductCubit>(create: (context)=>ProductCubit())
+          BlocProvider<ProductCubit>(create: (_)=>ProductCubit())
         ],
         child: const SearchProductPage(),
       )

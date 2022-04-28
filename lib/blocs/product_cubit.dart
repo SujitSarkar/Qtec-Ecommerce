@@ -15,6 +15,8 @@ class ProductCubit extends Cubit<ProductState> {
   int tempIndex=0;
   int cartCount=0;
 
+  FocusNode searchFocusNode = FocusNode();
+
   changeCart(bool val, int index){
     addedToCart=val;
     tempIndex=index;
@@ -57,5 +59,10 @@ class ProductCubit extends Cubit<ProductState> {
         emit(ProductInitial());
       }
     }else{}
+  }
+
+  enableSearchFocusNode(){
+    searchFocusNode.requestFocus();
+    emit(ProductInitial());
   }
 }
