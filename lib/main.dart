@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qtec_ecommerce/blocs/product_cubit.dart';
-import 'package:qtec_ecommerce/screens/search_page.dart';
+import 'package:qtec_ecommerce/screens/search_product_page.dart';
 import 'package:qtec_ecommerce/variables/variables.dart';
 
 void main() {
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<ProductCubit>(create: (context)=>ProductCubit())
         ],
-        child: const SearchPage(),
+        child: const SearchProductPage(),
       )
     );
   }

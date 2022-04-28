@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 
 class Variables{
   static const Color primaryColor = Color(0xffDA2079);
-  static const Color purpleDeep = Color(0xff1400AE);
+  static const Color secondaryColor = Color(0xffFFCCE4);
+  static const Color purpleDeep = Color(0xff2503B9);
   static const Color purpleLite= Color(0xff6210E1);
   static const Color appBgColor= Color(0xffF7F2FF);
   static final Color textColor= Colors.grey.shade900;
