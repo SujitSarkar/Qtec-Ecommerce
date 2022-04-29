@@ -20,6 +20,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
 
   void _onRefresh() async{
     final ProductCubit pc = BlocProvider.of<ProductCubit>(context,listen: false);
+    pc.searchController.clear();
     await pc.refreshProductList();
     _refreshController.refreshCompleted();
   }
@@ -60,8 +61,11 @@ class _SearchProductPageState extends State<SearchProductPage> {
         padding: EdgeInsets.symmetric(horizontal: wd*.04),
         child: TextField(
           controller: pc.searchController,
-          decoration: searchDecoration(wd),
+          decoration: searchDecoration(wd,pc),
           focusNode: pc.searchFocusNode,
+          onSubmitted: (val)async{
+            await pc.getProductList(isSearch: 'true');
+          },
         ),
       ),
 
@@ -104,7 +108,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
               ),
               itemCount: pc.productListModel.data!.products!.results!.length,
               shrinkWrap: true,
-              itemBuilder: (context, index)=>ProductTile(index: index)
+              itemBuilder: (context, index)=>ProductTile(index: index,result:pc.productListModel.data!.products!.results![index])
           ),
         ),
       ),

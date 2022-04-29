@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -98,14 +97,14 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
-  Future<void> getProductList()async{
-    if(productLimit==0){loading=true;emit(ProductInitial());}
+  Future<void> getProductList({String? isSearch})async{
+    if(productLimit==0 || isSearch!=null){loading=true;emit(ProductInitial());}
     productLimit = productLimit+10;
     print('Product Limit: $productLimit');
 
     try{
       http.Response response = await http.get(
-          Uri.parse(Variables.baseUrl+'product/search-suggestions/?limit=10&offset=$productLimit&search=${searchController.text}'));
+          Uri.parse(Variables.baseUrl+'product/search-suggestions/?limit=$productLimit&offset=10&search=${searchController.text}'));
 
       if(response.statusCode==200){
         final jsonData = jsonDecode(response.body);
@@ -130,7 +129,7 @@ class ProductCubit extends Cubit<ProductState> {
 
     try{
       http.Response response = await http.get(
-          Uri.parse(Variables.baseUrl+'product/search-suggestions/?limit=10&offset=$productLimit&search=${searchController.text}'));
+          Uri.parse(Variables.baseUrl+'product/search-suggestions/?limit=$productLimit&offset=10&search=${searchController.text}'));
 
       if(response.statusCode==200){
         final jsonData = jsonDecode(response.body);

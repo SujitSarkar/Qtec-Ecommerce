@@ -63,7 +63,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               Navigator.pop(context);
             },
             controller: pc.searchController,
-            decoration: searchDecoration(wd),
+            decoration: searchDecoration(wd,pc),
           ),
         ),
     SizedBox(height: wd * .04),

@@ -17,6 +17,7 @@ dependencies:
   carousel_slider: ^4.1.1
   flutter_polygon: ^0.3.0+2
   flutter_html: ^2.2.1
+  cached_network_image: ^3.2.0
 
 dev_dependencies:
   flutter_test:

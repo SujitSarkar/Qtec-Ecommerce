@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qtec_ecommerce/model/product_list_model.dart';
 import 'package:qtec_ecommerce/screens/product_details_page.dart';
 import '../blocs/product_cubit.dart';
 import '../variables/variables.dart';
 
 class ProductTile extends StatelessWidget {
-  const ProductTile({Key? key,required this.index}) : super(key: key);
+  const ProductTile({Key? key,required this.index, required this.result}) : super(key: key);
   final int index;
+  final Result result;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +47,16 @@ class ProductTile extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height:wd*.04),
-                    Image.asset('assets/p1.png',height: wd*.3),
+                    CachedNetworkImage(
+                      imageUrl: result.image??'',
+                      placeholder: (context, url) => Icon(Icons.image_outlined,color: Colors.grey,size: wd*.3),
+                      errorWidget: (context, url, error) => Icon(Icons.error,size: wd*.25,color: Colors.grey),
+                      height: wd*.3,
+                      fit: BoxFit.cover
+                    ),
+                    //Image.asset('assets/p1.png',height: wd*.3),
                     SizedBox(height:wd*.03),
-                    Text('লেস ক্লাসিক ফ্যামিলি সাইজ চিপস্ চিপস্',maxLines: 2,style: TextStyle(fontSize: wd*.042,height: 1.2)),
+                    Text(result.productName??'',maxLines: 2,style: TextStyle(fontSize: wd*.042,height: 1.2)),
                     SizedBox(height:wd*.02),
 
                     Row(
@@ -58,12 +68,13 @@ class ProductTile extends StatelessWidget {
                                 style: TextStyle(fontSize: wd*.048, color: Variables.primaryColor,fontWeight: FontWeight.bold),
                                 children: <TextSpan>[
                                   TextSpan(text: 'ক্রয়', style: TextStyle(fontSize: wd*.03, color: Colors.grey)),
-                                  const TextSpan(text: ' ৳20.00'),
+                                  TextSpan(text: ' ৳${result.charge!.currentCharge!}'),
                                 ],
                               ),
                             ),
                           ),
-                          Text('৳ 22.00',textAlign: TextAlign.end, style: TextStyle(fontSize: wd*.038, color: Variables.primaryColor,decoration: TextDecoration.lineThrough))
+                          if(result.charge!.discountCharge!=null)
+                          Text('৳ ${result.charge!.discountCharge!}',textAlign: TextAlign.end, style: TextStyle(fontSize: wd*.038, color: Variables.primaryColor,decoration: TextDecoration.lineThrough))
                         ]
                     ),
 
@@ -72,10 +83,10 @@ class ProductTile extends StatelessWidget {
                           RichText(
                             textAlign: TextAlign.start,
                             text: TextSpan(
-                              style: TextStyle(fontSize: wd*.04, color: Colors.grey),
+                              style: TextStyle(fontSize: wd*.035, color: Colors.grey),
                               children: <TextSpan>[
-                                TextSpan(text: 'বিক্রয়', style: TextStyle(fontSize: wd*.028,fontWeight: FontWeight.bold)),
-                                const TextSpan(text: ' ৳25.00'),
+                                TextSpan(text: 'বিক্রয়', style: TextStyle(fontSize: wd*.025,fontWeight: FontWeight.bold)),
+                                TextSpan(text: ' ৳${result.charge!.sellingPrice??''}'),
                               ],
                             ),
                           ),
@@ -83,10 +94,10 @@ class ProductTile extends StatelessWidget {
                             child: RichText(
                               textAlign: TextAlign.end,
                               text: TextSpan(
-                                style: TextStyle(fontSize: wd*.04, color: Colors.grey),
+                                style: TextStyle(fontSize: wd*.035, color: Colors.grey),
                                 children: <TextSpan>[
-                                  TextSpan(text: 'লাভ', style: TextStyle(fontSize: wd*.028,fontWeight: FontWeight.bold)),
-                                  const TextSpan(text: ' ৳5.00'),
+                                  TextSpan(text: 'লাভ', style: TextStyle(fontSize: wd*.025,fontWeight: FontWeight.bold)),
+                                  TextSpan(text: ' ৳${result.charge!.profit??''}'),
                                 ],
                               ),
                             ),
@@ -183,6 +194,7 @@ class ProductTile extends StatelessWidget {
             ),
 
             ///Stock Out
+            if(result.stock==null || result.stock!.toString().isEmpty)
             Positioned(
               top: wd*.02,
               right: wd*.02,
