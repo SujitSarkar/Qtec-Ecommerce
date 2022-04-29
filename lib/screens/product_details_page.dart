@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_polygon/flutter_polygon.dart';
 import 'package:qtec_ecommerce/blocs/product_cubit.dart';
 import 'package:qtec_ecommerce/variables/variables.dart';
 import '../variables/decorations.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({Key? key}) : super(key: key);
@@ -21,7 +23,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ProductCubit pc = BlocProvider.of<ProductCubit>(context);
+    final ProductCubit pc = BlocProvider.of<ProductCubit>(context,listen: true);
     final double wd = MediaQuery.of(context).size.width;
     return SafeArea(
         child: Scaffold(
@@ -108,6 +110,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           color: Variables.textColor,
                           fontSize: wd * .052,
                           fontWeight: FontWeight.bold)),
+                  SizedBox(height: wd*.01),
 
                   ///Brand distributor
                   Row(
@@ -138,10 +141,231 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         ),
                       ]
                   ),
+                  SizedBox(height: wd*.04),
+
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(height: wd*.52),
+
+                      ///ক্রয়মূল্য, বিক্রয়মূল্য, লাভ
+                      Positioned(
+                        top: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: wd*.04,vertical: wd*.02),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Column(
+                            children: [
+                              ///ক্রয়মূল্য
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text('ক্রয়মূল্যঃ',
+                                        style: TextStyle(color: Variables.primaryColor,fontSize: wd*.047,fontWeight: FontWeight.bold)),
+                                  ),
+                                  Text('৳ 220',
+                                      style: TextStyle(color: Variables.primaryColor,fontSize: wd*.047,fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              SizedBox(height: wd*.01),
+
+                              ///বিক্রয়মূল্য
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('বিক্রয়মূল্যঃ',
+                                      style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
+
+                                  ///Increment Decrement Button
+                                  if(pc.detailsCartCount!=0)
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(wd*.01),
+                                      margin: EdgeInsets.symmetric(horizontal: wd*.03),
+                                      decoration: BoxDecoration(
+                                        color: Variables.secondaryColor,
+                                        borderRadius: BorderRadius.all(Radius.circular( wd*.1)),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(
+                                            onTap: (){
+                                              pc.detailsCartDecrement();
+                                            },
+                                            child: Container(
+                                              height: wd*.1,
+                                              width: wd*.1,
+                                              alignment: Alignment.center,
+                                              decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:Color(0xffFFBFDD)
+                                              ),
+                                              child: Icon(Icons.remove,color: Colors.white,size: wd*.065),
+                                            ),
+                                          ),
+
+                                          Text('${pc.detailsCartCount}  পিস',style: TextStyle(color: Variables.primaryColor,fontWeight: FontWeight.bold,fontSize: wd*.04),),
+
+                                          InkWell(
+                                            onTap: (){
+                                              pc.detailsCartIncrement();
+                                            },
+                                            child: Container(
+                                              height: wd*.1,
+                                              width: wd*.1,
+                                              alignment: Alignment.center,
+                                              decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  gradient: LinearGradient(
+                                                      colors: [
+                                                        Variables.purpleLite,
+                                                        Variables.purpleDeep],
+                                                      begin: Alignment.topCenter,
+                                                      end: Alignment.bottomCenter
+                                                  )
+                                              ),
+                                              child: Icon(Icons.add,color: Colors.white,size: wd*.065),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  Text('৳ 250',
+                                      style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              SizedBox(height: wd*.03),
+
+                              ///Dashed Line
+                              Row(
+                                children: List.generate(160~/2, (index) => Expanded(
+                                  child: Container(
+                                    color: index%2==0?Colors.transparent
+                                        :Variables.hintColor,
+                                    height: 1,
+                                  ),
+                                )),
+                              ),
+                              SizedBox(height: wd*.01),
+
+                              ///লাভ
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text('লাভঃ',
+                                        style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
+                                  ),
+                                  Text('৳ 30',
+                                      style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      ///Cart Container
+                      Positioned(
+                        bottom: pc.detailsCartCount!=0? 0.0 : wd*.047,
+                        child: Stack(
+                          children: [
+                            ///Polygon Container
+                            SizedBox(
+                              height: wd*.27,
+                              width: wd*.27,
+                              child: InkWell(
+                                onTap: (){
+                                  pc.detailsAddToCart();
+                                },
+                                child: ClipPolygon(
+                                  sides: 6,
+                                  borderRadius: wd*.04,
+                                  rotate: 180.0,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Variables.purpleLite,
+                                          Variables.purpleDeep],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter
+                                      )
+                                    ),
+                                    child: pc.detailsCartCount!=0? Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Image.asset('assets/shopping_bag.png',height: wd*.08),
+                                        Text('কার্ট',textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: wd*.04),)
+                                      ],
+                                    )
+                                    :Text('এটি\nকিনুন',textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: wd*.04),),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            ///Cart count
+                            if(pc.detailsCartCount!=0)
+                            Positioned(
+                              right: 0.0,
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(wd*.025),
+                                decoration: BoxDecoration(
+                                  color: Variables.secondaryColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white,width: 2)
+                                ),
+                                child: Text('${pc.detailsCartCount}',style: TextStyle(color: Variables.primaryColor,fontSize: wd*.04)),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      ///Details Title
+                      Positioned(
+                        bottom: 0,
+                        left:0,
+                        child: Text('বিস্তারিত',style: TextStyle(color: Variables.textColor,fontSize: wd*.047,fontWeight: FontWeight.bold)),
+                      )
+                    ],
+                  ),
+
+                  ///Product Details
+                  Html(
+                    data:
+                    """<font color=\"#000000\" face=\"Noto Sans, sans-serif\" style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Noto Sans&quot;, sans-serif; font-size: 16px; letter-spacing: 0.14px;\"><span style=\"margin: 0px; padding: 0px; letter-spacing: -0.3px;\">প্রদর্শিত বিক্রয়মূল্য এবং লাভের পরিমাণ পরিবর্তনশীল। বাজার এবং&nbsp;</span></font><span style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Noto Sans&quot;, sans-serif; font-size: 16px; letter-spacing: -0.3px;\">বিক্রেতার</span><font color=\"#000000\" face=\"Noto Sans, sans-serif\" style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Noto Sans&quot;, sans-serif; font-size: 16px; letter-spacing: 0.14px;\"><span style=\"margin: 0px; padding: 0px; letter-spacing: -0.3px;\">&nbsp;বিবেচনার উপর নির্ভরশীল।</span></font>""",
+                    style: {
+                      'strong': Style(color: Variables.textColor),
+                      'body': Style(color: Variables.textColor),
+                      'span': Style(color: Variables.textColor),
+                      'p': Style(color: Variables.textColor),
+                      'li': Style(color: Variables.textColor),
+                      'ul': Style(color: Variables.textColor),
+                      'table': Style(color: Variables.textColor),
+                      'tbody': Style(color: Variables.textColor),
+                      'tr': Style(color: Variables.textColor),
+                      'td': Style(color: Variables.textColor),
+                      'th': Style(color: Variables.textColor),
+                      'font': Style(color: Variables.textColor)
+                    },
+                  )
                 ],
               ),
             ),
-
           ],
         ),
       ),

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Variables{
+
+  static const String baseUrl = 'https://panel.supplyline.network/api/';
+
   static const Color primaryColor = Color(0xffDA2079);
   static const Color secondaryColor = Color(0xffFFCCE4);
   static const Color purpleDeep = Color(0xff2503B9);

@@ -19,20 +19,25 @@ class _SearchProductPageState extends State<SearchProductPage> {
   RefreshController(initialRefresh: false);
 
   void _onRefresh() async{
-    // monitor network fetch
-    await Future.delayed(const Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
+    final ProductCubit pc = BlocProvider.of<ProductCubit>(context,listen: false);
+    await pc.refreshProductList();
     _refreshController.refreshCompleted();
   }
 
   void _onLoading() async{
-    // monitor network fetch
-    await Future.delayed(const Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    if(mounted) {
-      //setState(() {});
-    }
+    final ProductCubit pc = BlocProvider.of<ProductCubit>(context,listen: false);
+    await pc.getProductList();
+    // if(mounted) {
+    //   setState(() {});
+    // }
     _refreshController.loadComplete();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final ProductCubit pc = BlocProvider.of<ProductCubit>(context,listen: false);
+    pc.getProductList();
   }
 
   @override
@@ -41,7 +46,9 @@ class _SearchProductPageState extends State<SearchProductPage> {
     final double wd = MediaQuery.of(context).size.width;
     return SafeArea(
         child: Scaffold(
-          body: _bodyUI(pc,wd),
+          body: pc.loading
+              ? const Center(child: CircularProgressIndicator())
+              : _bodyUI(pc,wd),
         ));
   }
 
@@ -95,7 +102,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
                   mainAxisSpacing: wd*.07,
                   childAspectRatio: .6
               ),
-              itemCount: 20,
+              itemCount: pc.productListModel.data!.products!.results!.length,
               shrinkWrap: true,
               itemBuilder: (context, index)=>ProductTile(index: index)
           ),

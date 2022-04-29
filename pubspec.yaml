@@ -15,6 +15,8 @@ dependencies:
   http: ^0.13.4
   pull_to_refresh: ^2.0.0
   carousel_slider: ^4.1.1
+  flutter_polygon: ^0.3.0+2
+  flutter_html: ^2.2.1
 
 dev_dependencies:
   flutter_test:
