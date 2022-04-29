@@ -8,7 +8,7 @@ InputDecoration searchDecoration(double wd)=>InputDecoration(
     filled: true,
     isDense: true,
     suffixIcon: const Icon(CupertinoIcons.search, color: Variables.hintColor),
-    contentPadding: EdgeInsets.symmetric(horizontal: wd*.04,vertical: wd*.04),
+    contentPadding: EdgeInsets.symmetric(horizontal: wd*.04,vertical: wd*.03),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(15.0)),
       borderSide: BorderSide.none,
