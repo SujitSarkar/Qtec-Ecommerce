@@ -18,14 +18,14 @@ class ProductTile extends StatelessWidget {
 
     return InkWell(
       onTap: (){
+        pc.detailsCartCount=0;
         Navigator.of(context).push(MaterialPageRoute<ProductDetailsPage>(
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider.value(value: BlocProvider.of<ProductCubit>(context)),
-            ], child: const ProductDetailsPage(),
+            ], child: ProductDetailsPage(slug: result.slug),
           ),
-        ),
-        );
+        ));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular( wd*.05)),
@@ -52,8 +52,7 @@ class ProductTile extends StatelessWidget {
                       placeholder: (context, url) => Icon(Icons.image_outlined,color: Colors.grey,size: wd*.3),
                       errorWidget: (context, url, error) => Icon(Icons.error,size: wd*.25,color: Colors.grey),
                       height: wd*.3,
-                      fit: BoxFit.cover
-                    ),
+                      fit: BoxFit.cover),
                     //Image.asset('assets/p1.png',height: wd*.3),
                     SizedBox(height:wd*.03),
                     Text(result.productName??'',maxLines: 2,style: TextStyle(fontSize: wd*.042,height: 1.2)),
@@ -109,7 +108,7 @@ class ProductTile extends StatelessWidget {
               ),
             ),
 
-            ///Cad Section
+            ///Card Section
             pc.addedToCart==true && pc.tempIndex==index
                 ? Positioned(
                 bottom: 0.0,

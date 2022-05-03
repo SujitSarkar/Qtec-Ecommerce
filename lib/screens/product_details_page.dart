@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,18 +9,21 @@ import '../variables/decorations.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class ProductDetailsPage extends StatefulWidget {
-  const ProductDetailsPage({Key? key}) : super(key: key);
+  const ProductDetailsPage({Key? key,required this.slug}) : super(key: key);
+  final String slug;
+
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  final List<String> imgList = [
-    'assets/food.png',
-    'assets/food.png',
-    'assets/food.png',
-    'assets/food.png'
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    final ProductCubit pc = BlocProvider.of<ProductCubit>(context,listen: false);
+    pc.getProductDetails(widget.slug);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final double wd = MediaQuery.of(context).size.width;
     return SafeArea(
         child: Scaffold(
-      body: _bodyUI(pc, wd),
+      body: pc.loading
+          ? const Center(child: CircularProgressIndicator())
+          : _bodyUI(pc, wd),
     ));
   }
 
@@ -68,6 +74,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ),
     SizedBox(height: wd * .04),
 
+    ///Product details
     Expanded(
       child: SingleChildScrollView(
         child: Column(
@@ -89,12 +96,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 enlargeCenterPage: true,
                 scrollDirection: Axis.horizontal,
               ),
-              items: imgList.map((item) => Container(
+              items: pc.productDetailsModel.data!.images!.map<Widget>((item) => Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(wd*.04)),
                     color: Colors.white
                 ),
-                child: Center(child: Image.asset(item)),
+                child: Center(child: CachedNetworkImage(
+                    imageUrl: item.image!,
+                    placeholder: (context, url) => Icon(Icons.image_outlined,color: Colors.grey,size: wd*.3),
+                    errorWidget: (context, url, error) => Icon(Icons.error,size: wd*.25,color: Colors.grey),
+                    fit: BoxFit.cover
+                )),
               )).toList(),
             ),
             SizedBox(height: wd * .05),
@@ -105,7 +117,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ///Product Name
-                  Text('প্রিঞ্জেলস অনিওন চিপস ৪২ গ্রাম',
+                  Text(pc.productDetailsModel.data!.productName??'',
                       style: TextStyle(
                           color: Variables.textColor,
                           fontSize: wd * .052,
@@ -122,7 +134,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             style: TextStyle(fontSize: wd*.032, color: Colors.grey),
                             children: <TextSpan>[
                               const TextSpan(text: 'ব্রান্ডঃ'),
-                              TextSpan(text: ' প্রিঞ্জেলস   ', style: TextStyle(fontSize: wd*.034,color: Variables.textColor)),
+                              TextSpan(text: ' ${pc.productDetailsModel.data!.brand!.name}  ', style: TextStyle(fontSize: wd*.034,color: Variables.textColor)),
                             ],
                           ),
                         ),
@@ -134,7 +146,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               style: TextStyle(fontSize: wd*.032, color: Colors.grey),
                               children: <TextSpan>[
                                 const TextSpan(text: '   ডিস্ট্রিবিউটরঃ'),
-                                TextSpan(text: ' মোঃ মোবারাক হোসেন', style: TextStyle(fontSize: wd*.034,color: Variables.textColor)),
+                                TextSpan(text: ' ${pc.productDetailsModel.data!.seller}', style: TextStyle(fontSize: wd*.034,color: Variables.textColor)),
                               ],
                             ),
                           ),
@@ -169,7 +181,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     child: Text('ক্রয়মূল্যঃ',
                                         style: TextStyle(color: Variables.primaryColor,fontSize: wd*.047,fontWeight: FontWeight.bold)),
                                   ),
-                                  Text('৳ 220',
+                                  Text('৳ ${pc.productDetailsModel.data!.charge!.currentCharge}',
                                       style: TextStyle(color: Variables.primaryColor,fontSize: wd*.047,fontWeight: FontWeight.bold)),
                                 ],
                               ),
@@ -239,7 +251,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
 
-                                  Text('৳ 250',
+                                  Text('৳ ${pc.productDetailsModel.data!.charge!.sellingPrice}',
                                       style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
                                 ],
                               ),
@@ -265,7 +277,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     child: Text('লাভঃ',
                                         style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
                                   ),
-                                  Text('৳ 30',
+                                  Text('৳ ${pc.productDetailsModel.data!.charge!.profit}',
                                       style: TextStyle(color: Variables.textColor,fontSize: wd*.04,fontWeight: FontWeight.bold)),
                                 ],
                               )
@@ -347,7 +359,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ///Product Details
                   Html(
                     data:
-                    """<font color=\"#000000\" face=\"Noto Sans, sans-serif\" style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Noto Sans&quot;, sans-serif; font-size: 16px; letter-spacing: 0.14px;\"><span style=\"margin: 0px; padding: 0px; letter-spacing: -0.3px;\">প্রদর্শিত বিক্রয়মূল্য এবং লাভের পরিমাণ পরিবর্তনশীল। বাজার এবং&nbsp;</span></font><span style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Noto Sans&quot;, sans-serif; font-size: 16px; letter-spacing: -0.3px;\">বিক্রেতার</span><font color=\"#000000\" face=\"Noto Sans, sans-serif\" style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Noto Sans&quot;, sans-serif; font-size: 16px; letter-spacing: 0.14px;\"><span style=\"margin: 0px; padding: 0px; letter-spacing: -0.3px;\">&nbsp;বিবেচনার উপর নির্ভরশীল।</span></font>""",
+                    """${pc.productDetailsModel.data!.description}""",
                     style: {
                       'strong': Style(color: Variables.textColor),
                       'body': Style(color: Variables.textColor),

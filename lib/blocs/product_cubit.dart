@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:qtec_ecommerce/model/cart_model.dart';
+import 'package:qtec_ecommerce/model/product_details_model.dart';
 import 'package:qtec_ecommerce/model/product_list_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:qtec_ecommerce/variables/variables.dart';
@@ -26,7 +27,8 @@ class ProductCubit extends Cubit<ProductState> {
   ///Details page variables
   int detailsCartCount=0;
 
-  ProductListModel productListModel=ProductListModel();
+  ProductListModel productListModel = ProductListModel();
+  ProductDetailsModel productDetailsModel = ProductDetailsModel();
 
   changeCart(bool val, int index){
     addedToCart=val;
@@ -112,7 +114,6 @@ class ProductCubit extends Cubit<ProductState> {
           productListModel = productListModelFromJson(response.body);
         }
       }
-      print(productListModel.data!.products!.results!.length);
       loading=false;
       emit(ProductInitial());
     }catch(e){
@@ -137,9 +138,33 @@ class ProductCubit extends Cubit<ProductState> {
           productListModel = productListModelFromJson(response.body);
         }
       }
-      print(productListModel.data!.products!.results!.length);
+      if (kDebugMode) {
+        print(productListModel.data!.products!.results!.length);
+      }
       emit(ProductInitial());
     }catch(e){
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> getProductDetails(String slug)async{
+    loading=true;emit(ProductInitial());
+    try{
+      http.Response response = await http.get(
+          Uri.parse(Variables.baseUrl+'product-details/$slug'));
+
+      if(response.statusCode==200){
+        final jsonData = jsonDecode(response.body);
+        if(jsonData['status'].toLowerCase()=='success'){
+          productDetailsModel = productDetailsModelFromJson(response.body);
+        }
+      }
+      emit(ProductInitial());
+      loading=false;emit(ProductInitial());
+    }catch(e){
+      loading=false;emit(ProductInitial());
       if (kDebugMode) {
         print(e.toString());
       }
