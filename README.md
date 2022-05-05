@@ -1,16 +1,15 @@
-# qtec_ecommerce
+# Qtec-Ecommerce
 
-A new Flutter project.
+## Screenshots
+Home Page                             | Product Details Page
+--------------------------------------|--------------------------------------
+![image info](assets/screen_shots/home.png) | ![image info](assets/screen_shots/details.png)
 
-## Getting Started
+Product Search
+--------------------------------------|--------------------------------------
+![image info](assets/screen_shots/search.png)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Connect with
+<a href="mailto:sujitsarkar.cse@gmail.com">sujitsarkar.cse@gmail.com</a><br>
+<a href="https://github.com/SujitSarkar">Find more project on github</a>

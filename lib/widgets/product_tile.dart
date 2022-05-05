@@ -41,7 +41,7 @@ class ProductTile extends StatelessWidget {
                 height: wd*.67,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular( wd*.05)),
-                  color: Colors.white,
+                  color: Colors.white
                 ),
                 padding: EdgeInsets.symmetric(horizontal: wd*.02),
                 child: Column(
