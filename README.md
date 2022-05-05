@@ -5,7 +5,7 @@ Home Page                             | Product Details Page
 --------------------------------------|--------------------------------------
 ![image info](assets/screen_shots/home.png) | ![image info](assets/screen_shots/details.png)
 
-Product Search
+Product Search                        | ''
 --------------------------------------|--------------------------------------
 ![image info](assets/screen_shots/search.png)
 
